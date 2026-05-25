@@ -1,4 +1,4 @@
-const CACHE_NAME = "alatipha-rictpasco-v5";
+const CACHE_NAME = "alatipha-regictpasco-v1";
 
 const FILES_TO_CACHE = [
 
