@@ -4,7 +4,7 @@ const FILES_TO_CACHE = [
 
   "./",
   "./index-ict.html",
-  "./style.css",
+  "./style-ict.css",
   "./app-ict.js",
   "./manifest-ict.json",
   "./library/sample.epub"
