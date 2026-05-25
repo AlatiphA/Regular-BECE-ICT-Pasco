@@ -63,10 +63,10 @@ const bottomMenuBtn =
     "bottomMenuBtn"
   );
 
-const closeAppBtn =
+/* const closeAppBtn =
   document.getElementById(
     "closeAppBtn"
-  );
+  ); */
 
 const searchBtn =
   document.getElementById(
@@ -958,7 +958,7 @@ bottomMenuBtn.addEventListener(
   }
 );
 
-closeAppBtn.addEventListener(
+/* closeAppBtn.addEventListener(
   "click",
   () => {
 
@@ -977,7 +977,7 @@ closeAppBtn.addEventListener(
     }
 
   }
-);
+); */
 
 searchBtn.addEventListener(
   "click",
