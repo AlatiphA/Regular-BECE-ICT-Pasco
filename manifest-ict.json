@@ -1,7 +1,7 @@
 {
   "name": "AlatiphA BECE ICT Pasco",
   "short_name": "BECE ICT Pasco",
-  "start_url": "./index-ict.html",
+  "start_url": "./index.html?ict=true",
   "scope": "./",
   "display": "standalone",
   "background_color": "#111111",
