@@ -43,16 +43,6 @@ const prevPage =
     "prevPage"
   );
 
-const increaseFont =
-  document.getElementById(
-    "increaseFont"
-  );
-
-const decreaseFont =
-  document.getElementById(
-    "decreaseFont"
-  );
-
 const bottomThemeBtn =
   document.getElementById(
     "bottomThemeBtn"
@@ -911,45 +901,6 @@ prevPage.addEventListener(
   }
 );
 
-increaseFont.addEventListener(
-  "click",
-  () => {
-
-    fontSize += 10;
-
-    rendition.themes.fontSize(
-      fontSize + "%"
-    );
-
-    localStorage.setItem(
-      "fontSize-ict",
-      fontSize
-    );
-
-  }
-);
-
-decreaseFont.addEventListener(
-  "click",
-  () => {
-
-    if (fontSize <= 70)
-      return;
-
-    fontSize -= 10;
-
-    rendition.themes.fontSize(
-      fontSize + "%"
-    );
-
-    localStorage.setItem(
-      "fontSize-ict",
-      fontSize
-    );
-
-  }
-);
-
 bottomThemeBtn.addEventListener(
   "click",
   () => {
@@ -963,7 +914,19 @@ bottomDecreaseFont.addEventListener(
   "click",
   () => {
 
-    decreaseFont.click();
+    if (fontSize <= 70)
+      return;
+
+    fontSize -= 10;
+
+    rendition.themes.fontSize(
+      fontSize + "%"
+    );
+
+    localStorage.setItem(
+      "fontSize",
+      fontSize
+    );
 
   }
 );
@@ -972,7 +935,16 @@ bottomIncreaseFont.addEventListener(
   "click",
   () => {
 
-    increaseFont.click();
+    fontSize += 10;
+
+    rendition.themes.fontSize(
+      fontSize + "%"
+    );
+
+    localStorage.setItem(
+      "fontSize",
+      fontSize
+    );
 
   }
 );
