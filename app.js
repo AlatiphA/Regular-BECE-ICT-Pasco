@@ -830,60 +830,41 @@ function updateMenuButtons() {
 }
 
 /* =========================
-   TOGGLE SIDEBAR
-========================= */
-
-function toggleSidebar() {
-
-  sidebar.classList.toggle(
-    "active"
-  );
-
-  const isOpen =
-    sidebar.classList.contains(
-      "active"
-    );
-
-  updateMenuButtons();
-
-  if (isOpen) {
-
-    /* HIDE CONTROLS */
-
-    /* header.classList.add(
-      "hideControls"
-    ); */
-
-    footer.classList.add(
-      "hideControls"
-    );
-
-    controlsVisible = false;
-
-  }
-
-  else {
-
-    /* SHOW CONTROLS */
-
-    showControls();
-
-  }
-
-}
-
-/* =========================
-   MENU EVENTS
+   MENU BUTTON
 ========================= */
 
 menuBtn.addEventListener(
   "click",
-  toggleSidebar
+  () => {
+
+    sidebar.classList.toggle(
+      "active"
+    );
+
+    updateMenuButtons();
+
+    showControls();
+
+  }
 );
+
+/* =========================
+   BOTTOM MENU BUTTON
+========================= */
 
 bottomMenuBtn.addEventListener(
   "click",
-  toggleSidebar
+  () => {
+
+    sidebar.classList.toggle(
+      "active"
+    );
+
+    updateMenuButtons();
+
+    showControls();
+
+  }
 );
 
 
