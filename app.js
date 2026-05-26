@@ -805,11 +805,94 @@ function renderSearchResults(
 }
 
 
+/* =========================
+   MENU 
+========================= */
+
+function updateMenuButtons() {
+
+  const isOpen =
+    sidebar.classList.contains(
+      "active"
+    );
+
+  const icon =
+    isOpen
+      ? "✕"
+      : "☰";
+
+  menuBtn.textContent =
+    icon;
+
+  bottomMenuBtn.textContent =
+    icon;
+
+}
+
+/* =========================
+   TOGGLE SIDEBAR
+========================= */
+
+function toggleSidebar() {
+
+  sidebar.classList.toggle(
+    "active"
+  );
+
+  const isOpen =
+    sidebar.classList.contains(
+      "active"
+    );
+
+  updateMenuButtons();
+
+  if (isOpen) {
+
+    /* HIDE CONTROLS */
+
+    header.classList.add(
+      "hideControls"
+    );
+
+    footer.classList.add(
+      "hideControls"
+    );
+
+    controlsVisible = false;
+
+  }
+
+  else {
+
+    /* SHOW CONTROLS */
+
+    showControls();
+
+  }
+
+}
+
+/* =========================
+   MENU EVENTS
+========================= */
+
+menuBtn.addEventListener(
+  "click",
+  toggleSidebar
+);
+
+bottomMenuBtn.addEventListener(
+  "click",
+  toggleSidebar
+);
+
+
+
 /* ==========
    EVENTS
 ========== */
 
-menuBtn.addEventListener(
+/* menuBtn.addEventListener(
   "click",
   () => {
 
@@ -837,7 +920,7 @@ menuBtn.addEventListener(
   }
 );
 
-
+*/
 
 
 themeBtn.addEventListener(
