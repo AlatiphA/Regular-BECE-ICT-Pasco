@@ -981,14 +981,14 @@ bottomIncreaseFont.addEventListener(
   }
 );
 
-bottomMenuBtn.addEventListener(
+/* bottomMenuBtn.addEventListener(
   "click",
   () => {
 
     menuBtn.click();
 
   }
-);
+); */
 
 /* closeAppBtn.addEventListener(
   "click",
