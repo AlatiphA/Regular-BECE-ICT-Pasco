@@ -850,9 +850,9 @@ function toggleSidebar() {
 
     /* HIDE CONTROLS */
 
-    header.classList.add(
+    /* header.classList.add(
       "hideControls"
-    );
+    ); */
 
     footer.classList.add(
       "hideControls"
