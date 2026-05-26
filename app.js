@@ -805,75 +805,12 @@ function renderSearchResults(
 }
 
 
-/* =========================
-   MENU 
-========================= */
-
-function updateMenuButtons() {
-
-  const isOpen =
-    sidebar.classList.contains(
-      "active"
-    );
-
-  const icon =
-    isOpen
-      ? "✕"
-      : "☰";
-
-  menuBtn.textContent =
-    icon;
-
-  bottomMenuBtn.textContent =
-    icon;
-
-}
-
-/* =========================
-   MENU BUTTON
-========================= */
-
-menuBtn.addEventListener(
-  "click",
-  () => {
-
-    sidebar.classList.toggle(
-      "active"
-    );
-
-    updateMenuButtons();
-
-    showControls();
-
-  }
-);
-
-/* =========================
-   BOTTOM MENU BUTTON
-========================= */
-
-bottomMenuBtn.addEventListener(
-  "click",
-  () => {
-
-    sidebar.classList.toggle(
-      "active"
-    );
-
-    updateMenuButtons();
-
-    showControls();
-
-  }
-);
-
-
 
 /* ==========
    EVENTS
 ========== */
 
-/* menuBtn.addEventListener(
+menuBtn.addEventListener(
   "click",
   () => {
 
@@ -900,8 +837,6 @@ bottomMenuBtn.addEventListener(
 
   }
 );
-
-*/
 
 
 themeBtn.addEventListener(
