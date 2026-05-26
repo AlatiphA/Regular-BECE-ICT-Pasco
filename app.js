@@ -805,6 +805,10 @@ function renderSearchResults(
 }
 
 
+/* =========================
+   UPDATE MENU ICONS
+========================= */
+
 function updateMenuButtons() {
 
   const isOpen =
@@ -826,41 +830,33 @@ function updateMenuButtons() {
 }
 
 /* =========================
-   MENU BUTTON
+   TOGGLE SIDEBAR
+========================= */
+
+function toggleSidebar() {
+
+  sidebar.classList.toggle(
+    "active"
+  );
+
+  updateMenuButtons();
+
+  showControls();
+
+}
+
+/* =========================
+   MENU EVENTS
 ========================= */
 
 menuBtn.addEventListener(
   "click",
-  () => {
-
-    sidebar.classList.toggle(
-      "active"
-    );
-
-    updateMenuButtons();
-
-    showControls();
-
-  }
+  toggleSidebar
 );
-
-/* =========================
-   BOTTOM MENU BUTTON
-========================= */
 
 bottomMenuBtn.addEventListener(
   "click",
-  () => {
-
-    sidebar.classList.toggle(
-      "active"
-    );
-
-    updateMenuButtons();
-
-    showControls();
-
-  }
+  toggleSidebar
 );
 
 
