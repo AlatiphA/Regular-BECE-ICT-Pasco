@@ -491,6 +491,11 @@ body.dark .searchItem {
   border-color: #333;
 }
 
+.search-highlight {
+  pointer-events: none;
+}
+
+
 /* =========================
    MOBILE
 ========================= */
