@@ -116,6 +116,9 @@ const rightZone =
 let rendition;
 let book;
 
+let activeSearchHighlight =
+  null;
+
 let controlsVisible =
   true;
 
@@ -764,35 +767,79 @@ function renderSearchResults(
         result.excerpt;
 
       div.addEventListener(
-        "click",
-        async () => {
+  "click",
+  async () => {
 
-          try {
+    try {
 
-            await rendition.display(
-              result.cfi
-            );
+      /* OPEN LOCATION */
 
-            searchModal.classList.remove(
-              "active"
-            );
+      await rendition.display(
+        result.cfi
+      );
 
-          }
+      /* REMOVE OLD HIGHLIGHT */
 
-          catch (error) {
+      if (
+        activeSearchHighlight
+      ) {
 
-            console.error(
-              error
-            );
+        rendition.annotations.remove(
+          activeSearchHighlight,
+          "highlight"
+        );
 
-            alert(
-              "Could not open result."
-            );
+      }
 
-          }
+      /* ADD HIGHLIGHT */
+
+      rendition.annotations.highlight(
+
+        result.cfi,
+
+        {},
+
+        null,
+
+        "search-highlight",
+
+        {
+
+          fill: "yellow",
+
+          "fill-opacity": "0.35"
 
         }
+
       );
+
+      /* SAVE ACTIVE */
+
+      activeSearchHighlight =
+        result.cfi;
+
+      /* CLOSE SEARCH */
+
+      searchModal.classList.remove(
+        "active"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        error
+      );
+
+      alert(
+        "Could not open result."
+       );
+
+     }
+
+    }
+  );
 
       searchResults.appendChild(
         div
