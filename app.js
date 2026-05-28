@@ -63,11 +63,6 @@ const bottomMenuBtn =
     "bottomMenuBtn"
   );
 
-/* const closeAppBtn =
-  document.getElementById(
-    "closeAppBtn"
-  ); */
-
 const searchBtn =
   document.getElementById(
     "searchBtn"
@@ -194,9 +189,7 @@ function startReader() {
       }
     );
 
-  /* ==================
-     FONT & THEME
-  ================== */
+  /* FONT & THEME */
 
   rendition.themes.fontSize(
     fontSize + "%"
@@ -206,9 +199,7 @@ function startReader() {
 
   setupNavigationZones();
 
-  /* =========================
-     RESTORE SAVED LOCATION
-  ========================= */
+  /* RESTORE SAVED LOCATION */
 
   const savedLocation =
     localStorage.getItem(
@@ -219,9 +210,7 @@ function startReader() {
     savedLocation || undefined
   );
 
-  /* ====================
-     BACKGROUND SETUP
-  ==================== */
+  /* BACKGROUND SETUP */
 
   book.ready
     .then(async () => {
@@ -280,9 +269,7 @@ function startReader() {
 
     });
 
-  /* ==================
-     SAVE LOCATION
-  ================== */
+  /* SAVE LOCATION */
 
   rendition.on(
     "relocated",
@@ -334,9 +321,7 @@ function startReader() {
 }
 
 
-/* ===================
-   TOGGLE CONTROLS
-=================== */
+/* TOGGLE CONTROLS */
 
 function toggleControls() {
 
@@ -371,7 +356,11 @@ function toggleControls() {
 
 
 /* =========================
- GESTURES (Swipe Next/Prev)
+ GESTURES (Tap Next/Prev)
+========================= */
+
+/* =========================
+ GESTURES (Sidebar)
 ========================= */
 
 function sidebarIsOpen() {
@@ -381,6 +370,11 @@ function sidebarIsOpen() {
   );
 
 }
+
+
+/* =========================
+ GESTURES (Tap Navigation)
+========================= */
 
 function setupNavigationZones() {
 
@@ -541,7 +535,7 @@ function setupNavigationZones() {
 
 
 /* =========================
-   THEME
+   APPLY THEME
 ========================= */
 
 function applyTheme() {
@@ -619,7 +613,7 @@ function applyTheme() {
 
 
 /* =============
-   SEARCH
+   SEARCH BOOK 
 ============= */
 
 async function searchBook(
@@ -733,6 +727,11 @@ async function searchBook(
   }
 
 }
+
+
+/* =============
+   SEARCH RESULTS 
+============= */
 
 function renderSearchResults(
   results
@@ -861,37 +860,8 @@ bottomMenuBtn.addEventListener(
 
 
 /* ==========
-   EVENTS
+   OTHER EVENTS
 ========== */
-
-/* menuBtn.addEventListener(
-  "click",
-  () => {
-
-    sidebar.classList.toggle(
-      "active"
-    );
-
-    const isOpen =
-      sidebar.classList.contains(
-        "active"
-      );
-
-    menuBtn.textContent =
-      isOpen
-        ? "✕"
-        : "☰";
-
-    bottomMenuBtn.textContent =
-      isOpen
-        ? "✕"
-        : "☰";
-
-    showControls();
-
-  }
-); */
-
 
 themeBtn.addEventListener(
   "click",
@@ -911,9 +881,6 @@ themeBtn.addEventListener(
 
   }
 );
-
-
-
 
 nextPage.addEventListener(
   "click",
@@ -956,7 +923,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize",
+      "fontSize-ict",
       fontSize
     );
 
@@ -974,42 +941,12 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize",
+      "fontSize-ict",
       fontSize
     );
 
   }
 );
-
-/* bottomMenuBtn.addEventListener(
-  "click",
-  () => {
-
-    menuBtn.click();
-
-  }
-); */
-
-/* closeAppBtn.addEventListener(
-  "click",
-  () => {
-
-    if (
-      window.history.length > 1
-    ) {
-
-      history.back();
-
-    }
-
-    else {
-
-      window.close();
-
-    }
-
-  }
-); */
 
 searchBtn.addEventListener(
   "click",
