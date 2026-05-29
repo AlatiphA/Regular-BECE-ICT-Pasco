@@ -125,7 +125,7 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-ict"
+      "fontSize-regular"
     )
   ) || 100;
 
@@ -206,7 +206,7 @@ function startReader() {
 
   const savedLocation =
     localStorage.getItem(
-      "epub-ict-location"
+      "epub-regular-location"
     );
 
   rendition.display(
@@ -281,7 +281,7 @@ function startReader() {
       try {
 
         localStorage.setItem(
-          "epub-ict-location",
+          "epub-regular-location",
           location.start.cfi
         );
 
@@ -357,10 +357,6 @@ function toggleControls() {
 
 }
 
-
-/* =========================
- GESTURES (Tap Next/Prev)
-========================= */
 
 /* =========================
  GESTURES (Sidebar)
@@ -545,7 +541,7 @@ function applyTheme() {
 
   const darkMode =
     localStorage.getItem(
-      "darkMode-ict"
+      "darkMode-regular"
     ) === "true";
 
   document.body.classList.toggle(
@@ -916,11 +912,11 @@ themeBtn.addEventListener(
 
     const darkMode =
       localStorage.getItem(
-        "darkMode-ict"
+        "darkMode-regular"
       ) === "true";
 
     localStorage.setItem(
-      "darkMode-ict",
+      "darkMode-regular",
       (!darkMode).toString()
     );
 
@@ -970,7 +966,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-ict",
+      "fontSize-regular",
       fontSize
     );
 
@@ -988,7 +984,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-ict",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1058,7 +1054,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-ict.js"
+            "./sw-regular.js"
           );
 
       }
