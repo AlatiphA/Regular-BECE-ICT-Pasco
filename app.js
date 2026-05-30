@@ -132,7 +132,7 @@ let fontSize =
 
 
 const READER_DATA_KEY =
-  "epub-reader-data";
+  "epub-regular-reader-data"; 
 
 /* =========================
    SAVE READER DATA
