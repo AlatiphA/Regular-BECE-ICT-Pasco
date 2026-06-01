@@ -127,13 +127,13 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-private"
+      "fontSize-regular"
     )
   ) || 100;
 
 
 const READER_DATA_KEY =
-  "epub-private-reader-data";
+  "epub-regular-reader-data";
 
 /* =========================
    SAVE READER DATA
@@ -356,7 +356,7 @@ function startReader() {
 
               closeSidebar();
 
-              showControls();
+              // showControls();
 
             }
           );
@@ -473,8 +473,9 @@ function startReader() {
 
     }
 
-  }
-);
+   }
+    
+ );
 
 }  
 
@@ -500,8 +501,8 @@ function toggleControls() {
 
 
     document.body.classList.remove(
-  "readingMode"
-);
+      "readingMode"
+    );
     
 
   }
@@ -708,7 +709,7 @@ function applyTheme() {
 
   const darkMode =
     localStorage.getItem(
-      "darkMode-private"
+      "darkMode-regular"
     ) === "true";
 
   document.body.classList.toggle(
@@ -1083,11 +1084,11 @@ themeBtn.addEventListener(
 
     const darkMode =
       localStorage.getItem(
-        "darkMode-private"
+        "darkMode-regular"
       ) === "true";
 
     localStorage.setItem(
-      "darkMode-private",
+      "darkMode-regular",
       (!darkMode).toString()
     );
 
@@ -1137,7 +1138,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-private",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1155,7 +1156,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-private",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1225,7 +1226,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-private.js"
+            "./sw-regular.js"
           );
 
       }
