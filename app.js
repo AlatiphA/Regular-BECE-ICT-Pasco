@@ -304,7 +304,9 @@ function startReader() {
 
   setupNavigationZones();
 
-  header.classList.add(
+  hideControls();
+
+  /*header.classList.add(
     "hideControls"
   );
 
@@ -316,7 +318,7 @@ function startReader() {
 
   document.body.classList.add(
     "readingMode"
-  );
+  ); */
 
   /* RESTORE SAVED LOCATION */
   
@@ -542,6 +544,29 @@ function toggleControls() {
 
 
 /* =========================
+ HIDE CONTROLS 
+========================= */
+
+function hideControls() {
+
+  header.classList.add(
+    "hideControls"
+  );
+
+  footer.classList.add(
+    "hideControls"
+  );
+
+  controlsVisible = false;
+
+  document.body.classList.add(
+    "readingMode"
+  );
+
+}
+
+
+/* =========================
  GESTURES (Tap Next/Prev)
 ========================= */
 
@@ -651,6 +676,8 @@ function setupNavigationZones() {
 
       rendition.prev();
 
+      hideControls();
+
     }
   );
 
@@ -693,6 +720,8 @@ function setupNavigationZones() {
       e.stopPropagation();
 
       rendition.next();
+
+      hideControls();
 
     }
   );
@@ -1117,6 +1146,8 @@ nextPage.addEventListener(
 
     rendition.next();
 
+    hideControls();
+
   }
 );
 
@@ -1125,6 +1156,8 @@ prevPage.addEventListener(
   () => {
 
     rendition.prev();
+
+    hideControls();
 
   }
 );
