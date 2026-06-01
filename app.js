@@ -304,6 +304,20 @@ function startReader() {
 
   setupNavigationZones();
 
+  header.classList.add(
+    "hideControls"
+  );
+
+  footer.classList.add(
+    "hideControls"
+  );
+
+  controlsVisible = false;
+
+  document.body.classList.add(
+    "readingMode"
+  );
+
   /* RESTORE SAVED LOCATION */
   
   const readerData =
