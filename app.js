@@ -127,13 +127,13 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-beta"
+      "fontSize-regular"
     )
   ) || 100;
 
 
 const READER_DATA_KEY =
-  "epub-beta-reader-data";
+  "epub-regular-reader-data";
 
 /* =========================
    SAVE READER DATA
@@ -1275,11 +1275,11 @@ themeBtn.addEventListener(
 
     const darkMode =
       localStorage.getItem(
-        "darkMode-beta"
+        "darkMode-regular"
       ) === "true";
 
     localStorage.setItem(
-      "darkMode-beta",
+      "darkMode-regular",
       (!darkMode).toString()
     );
 
@@ -1294,8 +1294,6 @@ nextPage.addEventListener(
   () => {
 
     rendition.next();
-
-    // hideControls();
 
     hideControlsHeader();
 
@@ -1351,7 +1349,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1369,7 +1367,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1439,7 +1437,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-beta.js"
+            "./sw-regular.js"
           );
 
       }
