@@ -291,23 +291,17 @@ footer {
 
 .sidebar {
   position: fixed;
-
   top: 56px;
   left: -300px;
-
   width: 300px;
-
   height: calc(100dvh - 56px);
-
   background: white;
-
-  overflow-y: auto;
-
   transition: left 0.3s ease;
-
   z-index: 10000;
-
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+
 }
 
 .sidebar.active {
@@ -317,6 +311,39 @@ footer {
 body.dark .sidebar {
   background: #1e1e1e;
   color: white;
+}
+
+.tocContainer {
+  flex: 1;
+  overflow-y: auto;
+
+}
+
+.aboutSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 12px;
+  gap: 6px;
+}
+
+.aboutIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.aboutText {
+  font-size: 10px;
+  line-height: 1.6;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.aboutText strong {
+  font-size: 11px;
 }
 
 /* =========================
