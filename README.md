@@ -1,4 +1,4 @@
-# AlatiphA GES Pasco
+# Regular BECE ICT Pasco 
 
 A fast, lightweight, installable EPUB Reader PWA built with HTML, CSS, JavaScript, and epub.js.
 
