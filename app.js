@@ -28,6 +28,11 @@ const menuBtn =
     "menuBtn"
   );
 
+const bookmarkBtn =
+  document.getElementById(
+    "bookmarkBtn"
+  );
+
 const themeBtn =
   document.getElementById(
     "themeBtn"
@@ -41,11 +46,6 @@ const nextPage =
 const prevPage =
   document.getElementById(
     "prevPage"
-  );
-
-const bottomThemeBtn =
-  document.getElementById(
-    "bottomThemeBtn"
   );
 
 const bottomDecreaseFont =
@@ -116,8 +116,10 @@ const rightZone =
 
 /* OTHER GLOBALS */
 
-let rendition;
 let book;
+let rendition;
+let currentLocation = null;
+
 let activeSearchHighlight =
   null;
 
@@ -127,13 +129,30 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-regular"
+      "fontSize-private"
     )
   ) || 100;
 
 
+/* =========================
+   APP VERSION
+   Change this on every release
+========================= */
+const APP_VERSION = "1.0.1";
+
+const versionEl =
+  document.getElementById(
+    "appVersion"
+  );
+if (versionEl)
+  versionEl.textContent =
+    "v" + APP_VERSION;
+
 const READER_DATA_KEY =
-  "epub-regular-reader-data";
+  "epub-private-reader-data";
+
+const BOOKMARKS_KEY =
+  "epub-private-bookmarks";
 
 /* =========================
    SAVE READER DATA
@@ -196,6 +215,209 @@ function loadReaderData() {
     return {};
 
   }
+
+}
+
+
+/* ==================
+   BOOKMARKS
+================== */
+
+function saveBookmark() {
+
+  if (
+    !rendition ||
+    !currentLocation
+  ) {
+
+    return;
+
+  }
+
+  const bookmarks =
+    JSON.parse(
+      localStorage.getItem(
+        BOOKMARKS_KEY
+      ) || "[]"
+    );
+
+  const chapterName =
+    getCurrentChapter(
+      currentLocation.start.href
+    );
+
+  const percent =
+    Math.floor(
+      book.locations
+        .percentageFromCfi(
+          currentLocation.start.cfi
+        ) * 100
+    );
+
+  bookmarks.push({
+
+    cfi:
+      currentLocation.start.cfi,
+
+    chapter:
+      chapterName,
+
+    progress:
+      percent,
+
+    date:
+      new Date()
+        .toISOString()
+
+  });
+
+  localStorage.setItem(
+    BOOKMARKS_KEY,
+    JSON.stringify(
+      bookmarks
+    )
+  );
+
+  loadBookmarks();
+
+  /* Switch sidebar to Bookmarks tab */
+  document.querySelectorAll(
+    ".sidebarTab"
+  ).forEach(t =>
+    t.classList.remove("active")
+  );
+  document.querySelectorAll(
+    ".tabPanel"
+  ).forEach(p =>
+    p.classList.remove("active")
+  );
+  const bTab = document.querySelector(
+    '[data-tab="bookmarks"]'
+  );
+  const bPanel = document.getElementById(
+    "bookmarksPanel"
+  );
+  if (bTab) bTab.classList.add("active");
+  if (bPanel) bPanel.classList.add("active");
+
+}
+
+
+function loadBookmarks() {
+
+  const list =
+    document.getElementById(
+      "bookmarksList"
+    );
+
+  if (!list)
+    return;
+
+  list.innerHTML = "";
+
+  const bookmarks =
+    JSON.parse(
+      localStorage.getItem(
+        BOOKMARKS_KEY
+      ) || "[]"
+    );
+
+  if (!bookmarks.length) {
+    list.innerHTML =
+      '<div class="noBookmarks">No bookmarks yet.<br>Tap 🔖 while reading to add one.</div>';
+    return;
+  }
+
+  bookmarks.forEach(
+    (bookmark, index) => {
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+      row.className =
+        "bookmarkRow";
+
+      /* Navigate link */
+      const item =
+        document.createElement(
+          "a"
+        );
+
+      item.href = "#";
+
+      item.className =
+        "bookmarkLink";
+
+      item.textContent =
+        bookmark.chapter +
+        " (" +
+        bookmark.progress +
+        "%)";
+
+      item.addEventListener(
+        "click",
+        e => {
+
+          e.preventDefault();
+
+          rendition.display(
+            bookmark.cfi
+          );
+
+          closeSidebar();
+
+          hideControls();
+
+        }
+      );
+
+      /* Delete button */
+      const del =
+        document.createElement(
+          "button"
+        );
+
+      del.className =
+        "bookmarkDelete";
+
+      del.title =
+        "Delete bookmark";
+
+      del.textContent = "🗑";
+
+      del.addEventListener(
+        "click",
+        e => {
+
+          e.stopPropagation();
+
+          const all =
+            JSON.parse(
+              localStorage.getItem(
+                BOOKMARKS_KEY
+              ) || "[]"
+            );
+
+          all.splice(index, 1);
+
+          localStorage.setItem(
+            BOOKMARKS_KEY,
+            JSON.stringify(all)
+          );
+
+          loadBookmarks();
+
+        }
+      );
+
+      row.appendChild(item);
+      row.appendChild(del);
+      list.appendChild(row);
+
+    }
+  );
 
 }
 
@@ -364,6 +586,7 @@ function buildTOC(
       );
 
       closeSidebar();
+      
       hideControls();
 
     }
@@ -463,56 +686,43 @@ function startReader() {
 
   hideControls();
 
+  /* DISPLAY IMMEDIATELY — don't wait for locations */
 
-  /* RESTORE SAVED LOCATION */
-  
-  const readerData =
-   loadReaderData();
+  const readerData = loadReaderData();
+  const savedLocation = readerData.location;
 
-  const savedLocation =
-   readerData.location;
+  rendition
+    .display(savedLocation || undefined)
+    .catch(() => rendition.display());
 
-  rendition.display(
-   savedLocation || undefined
-);
+  /* BACKGROUND SETUP — TOC + locations, never blocks rendering */
 
-  /* BACKGROUND SETUP */
-  
-  book.ready
-    .then(async () => {
+  book.ready.then(() => {
 
-      /* TOC */
-      toc.innerHTML = "";
+    toc.innerHTML = "";
 
-      const navigation =
-        book.navigation;
-
-      navigation.toc.forEach(
-        item => {
-
-          buildTOC(
-            item
-          );
-
-        }
-      );
-
-      /* GENERATE LOCATIONS */
-      
-      await book.locations.generate(
-        1000
-      );
-
+    book.navigation.toc.forEach(item => {
+      buildTOC(item);
+      loadBookmarks();
     });
-  
 
-  /* SAVE LOCATION */
+    /* Generate locations in background — progress works once ready */
+    book.locations
+      .generate(1000)
+      .catch(err => console.warn("Locations:", err));
+
+  });
+
+    /* SAVE LOCATION */
 
   rendition.on(
    "relocated",
    location => {
 
     try {
+
+      currentLocation =
+        location;
 
       /* =========================
          CALCULATE PROGRESS
@@ -576,20 +786,11 @@ function startReader() {
         location.start.href
       );
 
-  
-  readingInfo.textContent =
-    chapterName +
-    " • " +
-    percent +
-    "%";
-  
-/*
-       readingInfo.textContent =
-         "[" +
-       chapterName +
-         "] " +
-       location.start.href;
-       */
+      readingInfo.textContent =
+        chapterName +
+        " • " +
+        percent +
+        "%";
 
     }
       
@@ -873,72 +1074,78 @@ function setupNavigationZones() {
    THEME
 ========================= */
 
-function applyTheme() {
+/* =========================
+   THEME ENGINE
+========================= */
 
-  const darkMode =
-    localStorage.getItem(
-      "darkMode-beta"
-    ) === "true";
+const THEMES = {
+  light: {
+    bg:    "#f5f5f5",
+    color: "#111111",
+    link:  "#1565c0",
+  },
+  dark: {
+    bg:    "#111111",
+    color: "#eeeeee",
+    link:  "#4dabff",
+  },
+  sepia: {
+    bg:    "#f4ede0",
+    color: "#2c1a0e",
+    link:  "#7a4a1a",
+  },
+  night: {
+    bg:    "#000000",
+    color: "#bbbbbb",
+    link:  "#4dabff",
+  },
+};
 
-  document.body.classList.toggle(
-    "dark",
-    darkMode
+function applyTheme(theme) {
+
+  if (!theme) {
+    theme = localStorage.getItem(
+      "theme-v2"
+    ) || "dark";
+  }
+
+  localStorage.setItem(
+    "theme-v2", theme
   );
 
-  /* UPDATE ICONS */
+  /* Remove all theme classes */
+  document.body.classList.remove(
+    "dark", "sepia", "night"
+  );
 
-  themeBtn.textContent =
-    darkMode
-      ? "🌙"
-      : "☀️";
+  if (theme !== "light") {
+    document.body.classList.add(theme);
+  }
 
-  bottomThemeBtn.textContent =
-    darkMode
-      ? "🌙"
-      : "☀️";
-
-  /* SAFETY */
-
-  if (!rendition)
-    return;
-
-  /* FORCE EPUB REFRESH */
-
-  rendition.themes.default({
-
-    body: {
-
-      background:
-        darkMode
-          ? "#111111"
-          : "#ffffff",
-
-      color:
-        darkMode
-          ? "#ffffff"
-          : "#111111",
-
-      padding: "20px",
-
-      "line-height": "1.7",
-
-      "font-family":
-        "Arial, sans-serif"
-
-    },
-
-    a: {
-
-      color:
-        darkMode
-          ? "#4dabff"
-          : "#1565c0"
-
-    }
-
+  /* Mark active option */
+  document.querySelectorAll(
+    ".themeOption"
+  ).forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.theme === theme
+    );
   });
 
-  /* RE-APPLY FONT SIZE */
+  if (!rendition) return;
+
+  const t = THEMES[theme] || THEMES.dark;
+
+  rendition.themes.default({
+    body: {
+      background:   t.bg,
+      color:        t.color,
+      padding:      "20px",
+      "line-height":"1.7",
+      "font-family":"Arial, sans-serif",
+    },
+    a: { color: t.link },
+  });
 
   rendition.themes.fontSize(
     fontSize + "%"
@@ -1218,16 +1425,19 @@ function toggleSidebar() {
   updateMenuButtons();
 
   hideFooter();
+
 }
 
 /* CLOSE SIDEBAR */
 
 function closeSidebar() {
   sidebar.classList.remove("active");
-  updateMenuButtons();
-
-  hideHeader();
   
+  updateMenuButtons();
+  
+  hideHeader();
+
+  //showControls();
 }
 
 /* MENU EVENTS */
@@ -1243,57 +1453,38 @@ bottomMenuBtn.addEventListener(
 );
 
 
-
-/*
-menuBtn.addEventListener(
-  "click",
-  () => {
-
-    if (
-      sidebar.classList.contains(
-        "active"
-      )
-    ) {
-
-      closeSidebar();
-
-    }
-
-    else {
-
-      openSidebar();
-
-    }
-
-  }
-);
-*/
-
-
-
-
 /* ==========
    OTHER EVENTS
 ========== */
 
+/* Theme button — toggle picker panel */
+const themePicker =
+  document.getElementById(
+    "themePicker"
+  );
+
+function toggleThemePicker() {
+  themePicker.classList.toggle("open");
+}
+
+function closeThemePicker() {
+  themePicker.classList.remove("open");
+}
+
 themeBtn.addEventListener(
   "click",
-  () => {
-
-    const darkMode =
-      localStorage.getItem(
-        "darkMode-regular"
-      ) === "true";
-
-    localStorage.setItem(
-      "darkMode-regular",
-      (!darkMode).toString()
-    );
-
-    applyTheme();
-    updateMenuButtons();
-
+  e => {
+    e.stopPropagation();
+    toggleThemePicker();
   }
+);
+
+/* Close picker when nav zones are tapped */
+[leftZone, centerZone, rightZone].forEach(
+  zone => zone.addEventListener(
+    "click",
+    () => closeThemePicker()
+  )
 );
 
 nextPage.addEventListener(
@@ -1303,7 +1494,7 @@ nextPage.addEventListener(
     rendition.next();
 
     hideHeader();
-    
+
   }
 );
 
@@ -1318,26 +1509,15 @@ prevPage.addEventListener(
   }
 );
 
-
-/*
-bottomMenuBtn.addEventListener(
+bookmarkBtn.addEventListener(
   "click",
   () => {
 
-    menuBtn.click();
+    saveBookmark();
 
-  }
-);
-
-*/
-
-
-bottomThemeBtn.addEventListener(
-  "click",
-  () => {
-
-    themeBtn.click();
-    updateMenuButtons();
+    alert(
+      "Bookmark saved"
+    );
 
   }
 );
@@ -1356,7 +1536,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-regular",
+      "fontSize-private",
       fontSize
     );
 
@@ -1374,7 +1554,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-regular",
+      "fontSize-private",
       fontSize
     );
 
@@ -1444,7 +1624,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-regular.js"
+            "./sw-private.js"
           );
 
       }
@@ -1461,3 +1641,155 @@ if (
 }
 
 loadBook();
+
+/* =========================
+   SIDEBAR TABS
+========================= */
+
+document.querySelectorAll(
+  ".sidebarTab"
+).forEach(tab => {
+
+  tab.addEventListener(
+    "click",
+    () => {
+
+      /* Update tab buttons */
+      document.querySelectorAll(
+        ".sidebarTab"
+      ).forEach(t =>
+        t.classList.remove("active")
+      );
+      tab.classList.add("active");
+
+      /* Update panels */
+      document.querySelectorAll(
+        ".tabPanel"
+      ).forEach(p =>
+        p.classList.remove("active")
+      );
+
+      const target =
+        document.getElementById(
+          tab.dataset.tab === "toc"
+            ? "tocPanel"
+            : "bookmarksPanel"
+        );
+
+      if (target)
+        target.classList.add("active");
+
+    }
+  );
+
+});
+
+
+/* =========================
+   SIDEBAR GESTURES
+========================= */
+
+/* 1. Tap outside sidebar to close */
+document.addEventListener(
+  "click",
+  e => {
+
+    if (
+      sidebar.classList.contains(
+        "active"
+      ) &&
+      !sidebar.contains(e.target) &&
+      e.target !== menuBtn &&
+      e.target !== bottomMenuBtn
+    ) {
+
+      closeSidebar();
+
+    }
+
+  }
+);
+
+/* 2. Swipe left on sidebar to close */
+let swipeStartX = null;
+let swipeStartY = null;
+
+sidebar.addEventListener(
+  "touchstart",
+  e => {
+
+    swipeStartX =
+      e.touches[0].clientX;
+
+    swipeStartY =
+      e.touches[0].clientY;
+
+  },
+  { passive: true }
+);
+
+sidebar.addEventListener(
+  "touchend",
+  e => {
+
+    if (swipeStartX === null)
+      return;
+
+    const dx =
+      e.changedTouches[0].clientX -
+      swipeStartX;
+
+    const dy =
+      e.changedTouches[0].clientY -
+      swipeStartY;
+
+    /* Horizontal swipe left,
+       more horizontal than vertical */
+    if (
+      dx < -50 &&
+      Math.abs(dx) > Math.abs(dy)
+    ) {
+
+      closeSidebar();
+
+    }
+
+    swipeStartX = null;
+    swipeStartY = null;
+
+  },
+  { passive: true }
+);
+
+
+/* =========================
+   THEME OPTION CLICKS
+========================= */
+
+document.querySelectorAll(
+  ".themeOption"
+).forEach(btn => {
+
+  btn.addEventListener(
+    "click",
+    () => {
+      applyTheme(btn.dataset.theme);
+      closeThemePicker();
+    }
+  );
+
+});
+
+/* Close picker on outside tap */
+document.addEventListener(
+  "click",
+  e => {
+    if (
+      themePicker.classList.contains("open") &&
+      !themePicker.contains(e.target) &&
+      !themeBtn.contains(e.target)
+    ) {
+      closeThemePicker();
+    }
+  }
+);

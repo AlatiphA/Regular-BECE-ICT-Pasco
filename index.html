@@ -10,7 +10,7 @@
   />
 
   <title>
-    Regular BECE ICT Pasco
+    Private BECE ICT Pasco
   </title>
 
   <link
@@ -20,7 +20,7 @@
 
   <!-- Android -->
   <link rel="manifest"
-    href="./manifest-regular.json"
+    href="./manifest-private.json"
   />
   
   <meta 
@@ -30,7 +30,7 @@
 
   <!-- iPhone -->
   <link rel="apple-touch-icon"
-    href="icon-regular-192.png"
+    href="icon-private-192.png"
   >
 
   <meta
@@ -60,15 +60,15 @@
     </button>
 
     <h1 class="title">
-      Regular BECE ICT Pasco
+      Private BECE ICT Pasco 
     </h1>
 
     <button
       id="themeBtn"
       class="iconBtn"
-      aria-label="Toggle Theme"
+      aria-label="Change Theme"
     >
-      ☀
+      🎨
     </button>
 
   </header>
@@ -77,54 +77,59 @@
     id="sidebar"
     class="sidebar"
   >
-    
-  <!-- Contents -->  
-  <h3>
-     Contents 
-  </h3>
-    
-  <div
-     id="toc"
-      class="tocContainer"
-    ></div>
 
-  <!-- about --> 
+    <!-- Tab Buttons -->
+    <div class="sidebarTabs">
+      <button class="sidebarTab active" data-tab="toc">Contents</button>
+      <button class="sidebarTab" data-tab="bookmarks">Bookmarks</button>
+    </div>
+
+    <!-- Contents Panel -->
+    <div id="tocPanel" class="tabPanel active">
+      <div id="toc" class="tocContainer"></div>
+    </div>
+
+    <!-- Bookmarks Panel -->
+    <div id="bookmarksPanel" class="tabPanel">
+      <div id="bookmarksList"></div>
+    </div>
+
+
+  <!-- About --> 
   <div class="aboutSection">
 
   <img
-    src="icon-regular-192.png"
-    alt="Regular Pasco Icon"
+    src="icon-private-192.png"
+    alt="PBECEICTP Icon"
     class="aboutIcon"
   >
 
   <div class="aboutText">
 
     <strong>
-      Regular BECE ICT Pasco
+      Private BECE ICT Pasco 
     </strong>
 
     <br>
 
-    2026 Edition
+    ©️ All Rights Reserved | 2026 Edition · <span id="appVersion">v1.0.0</span>
 
     <br>
 
     Developed by Abdul-Latif Ahmed [AlatiphA]
 
-
   </div>
 
 </div>
-
-    
- </aside>
+  
+  </aside>
 
   <main>
 
-  <div id="viewer"></div>
-
-    <div id="readingInfo"></div>
-
+  <div id="viewer"></div>  
+    
+  <div id="readingInfo"></div>
+    
   <div id="navOverlay">
 
     <div
@@ -139,14 +144,14 @@
 
     <div
       id="rightZone"
-      class="navZone"
-    ></div>
+      class="navZone"></div>
 
   </div>
 
   </main>
 
   <footer>
+  
 
   <div class="topFooter">
 
@@ -178,6 +183,7 @@
     </button>
 
   </div>
+    
 
   <div class="bottomFooter">
 
@@ -198,11 +204,10 @@
     </button>
 
     <button
-      id="searchBtn"
+      id="bookmarkBtn"
       class="bottomBtn"
-      aria-label="Search"
     >
-      🔍
+     🔖
     </button>
 
     <button
@@ -214,11 +219,11 @@
     </button>
 
     <button
-      id="bottomThemeBtn"
+      id="searchBtn"
       class="bottomBtn"
-      aria-label="Theme"
+      aria-label="Search"
     >
-      ☀
+      🔍
     </button>
 
   </div>
@@ -245,6 +250,31 @@
 
   </div>
 
+</div>
+
+<!-- Theme Picker Panel -->
+<div id="themePicker" class="themePicker">
+  <div class="themePickerInner">
+    <span class="themePickerLabel">Theme</span>
+    <div class="themeOptions">
+      <button class="themeOption" data-theme="light">
+        <span class="themeSwatchWrap light"><span class="themeSwatch"></span></span>
+        <span>Light</span>
+      </button>
+      <button class="themeOption" data-theme="dark">
+        <span class="themeSwatchWrap dark"><span class="themeSwatch"></span></span>
+        <span>Dark</span>
+      </button>
+      <button class="themeOption" data-theme="sepia">
+        <span class="themeSwatchWrap sepia"><span class="themeSwatch"></span></span>
+        <span>Sepia</span>
+      </button>
+      <button class="themeOption" data-theme="night">
+        <span class="themeSwatchWrap night"><span class="themeSwatch"></span></span>
+        <span>Night</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
