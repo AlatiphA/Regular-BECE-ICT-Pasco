@@ -8,18 +8,18 @@
 ===================================================== */
 
 const APP_VERSION  = "1.0.1";
-const CACHE_NAME   = `alatipha-pbeceict-pasco-${APP_VERSION}`;
+const CACHE_NAME   = `alatipha-rbeceict-pasco-${APP_VERSION}`;
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./sw-private.js",
-  "./manifest-private.json",
+  "./sw-regular.js",
+  "./manifest-regular.json",
   "./library/sample.epub",
-  "./icon-private-192.png",
-  "./icon-private-512.png",
+  "./icon-regular-192.png",
+  "./icon-regular-512.png",
 ];
 
 /* =========================
