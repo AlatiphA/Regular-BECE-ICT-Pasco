@@ -129,7 +129,7 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-private"
+      "fontSize-regular"
     )
   ) || 100;
 
@@ -149,10 +149,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "epub-private-reader-data";
+  "epub-regular-reader-data";
 
 const BOOKMARKS_KEY =
-  "epub-private-bookmarks";
+  "epub-regular-bookmarks";
 
 /* =========================
    SAVE READER DATA
@@ -1437,7 +1437,6 @@ function closeSidebar() {
   
   hideHeader();
 
-  //showControls();
 }
 
 /* MENU EVENTS */
@@ -1536,7 +1535,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-private",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1554,7 +1553,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-private",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1624,7 +1623,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-private.js"
+            "./sw-regular.js"
           );
 
       }
