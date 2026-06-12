@@ -113,7 +113,6 @@ const rightZone =
     "rightZone"
   );
 
-
 /* OTHER GLOBALS */
 
 let book;
