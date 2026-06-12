@@ -129,7 +129,7 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-beta"
+      "fontSize-regular"
     )
   ) || 100;
 
@@ -149,10 +149,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "epub-beta-reader-data";
+  "epub-regular-reader-data";
 
 const BOOKMARKS_KEY =
-  "epub-beta-bookmarks";
+  "epub-regular-bookmarks";
 
 
 /* =========================
@@ -662,10 +662,6 @@ function buildTOC(
 }
 
 
-/* =================
-   START READER
-================= */
-
 /* =========================
    SLIDE PAGE ANIMATION
 ========================= */
@@ -732,6 +728,11 @@ function pagePrev() {
   if (!rendition || _sliding) return;
   slidePage("prev", () => rendition.prev());
 }
+
+
+/* =================
+   START READER
+================= */
 
 function startReader() {
 
@@ -1702,7 +1703,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1720,7 +1721,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize-regular",
       fontSize
     );
 
@@ -1794,7 +1795,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-beta.js"
+            "./sw-regular.js"
           );
 
       }
@@ -1809,6 +1810,7 @@ if (
   );
 
 }
+  
 
 /* =========================
    SIDEBAR TAB SWITCHING
@@ -2069,9 +2071,9 @@ loadBook();
       document.createElement("div");
     banner.id = "installBanner";
     banner.innerHTML = `
-      <img src="icon-beta-192.png" alt="icon" />
+      <img src="icon-regular-192.png" alt="icon" />
       <div class="ib-text">
-        <div class="ib-title">GES Pasco</div>
+        <div class="ib-title">Regular BECE ICT Pasco</div>
         <div class="ib-sub">Add to Home Screen for offline reading</div>
       </div>
       <div class="ib-actions">
@@ -2135,7 +2137,7 @@ loadBook();
       banner.id = "iosBanner";
       banner.innerHTML = `
         <div class="ios-title">
-          📖 Install GES Pasco
+          📖 Install Regular BECE ICT Pasco
         </div>
         <div class="ios-steps">
           Tap <strong>Share</strong> (□↑) at the bottom of Safari<br>
