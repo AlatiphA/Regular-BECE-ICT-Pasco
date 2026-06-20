@@ -129,7 +129,7 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize-beta"
+      "fontSize"
     )
   ) || 100;
 
@@ -149,10 +149,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "epub-beta-reader-data";
+  "regular-ges-pasco-data";
 
 const BOOKMARKS_KEY =
-  "epub-beta-bookmarks";
+  "regular-ges-pasco-bookmarks";
 
 
 /* =========================
@@ -662,10 +662,6 @@ function buildTOC(
 }
 
 
-/* =================
-   START READER
-================= */
-
 /* =========================
    SLIDE PAGE ANIMATION
 ========================= */
@@ -732,6 +728,11 @@ function pagePrev() {
   if (!rendition || _sliding) return;
   slidePage("prev", () => rendition.prev());
 }
+
+
+/* =================
+   START READER
+================= */
 
 function startReader() {
 
@@ -1702,7 +1703,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize",
       fontSize
     );
 
@@ -1720,7 +1721,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize",
       fontSize
     );
 
@@ -1794,7 +1795,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-beta.js"
+            "./sw-regular.js"
           );
 
       }
