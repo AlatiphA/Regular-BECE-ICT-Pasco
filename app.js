@@ -23,10 +23,27 @@ const sidebar =
     "sidebar"
   );
 
-const menuBtn =
+const clearCacheBtn =
   document.getElementById(
-    "menuBtn"
+    "clearCacheBtn"
   );
+
+if (clearCacheBtn) {
+  clearCacheBtn.addEventListener("click", () => {
+
+    if (!confirm("Clear all app data?\n\nThis will reset bookmarks, themes, and cached files.")) return;
+
+    localStorage.clear();
+
+    caches.keys().then(names => {
+      names.forEach(name => caches.delete(name));
+    });
+
+    alert("App data cleared. The app will now reload.");
+    location.reload();
+
+  });
+}
 
 const bookmarkBtn =
   document.getElementById(
@@ -133,12 +150,16 @@ let fontSize =
     )
   ) || 100;
 
+let fontFamily =
+  localStorage.getItem("fontFamily") ||
+  "serif";
+
 
 /* =========================
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.0.6";
+const APP_VERSION = "3.2.9";
 
 const versionEl =
   document.getElementById(
@@ -149,10 +170,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "regular-ges-pasco-data";
+  "ges-mat-data";
 
 const BOOKMARKS_KEY =
-  "regular-ges-pasco-bookmarks";
+  "ges-mat-bookmarks";
 
 
 /* =========================
@@ -729,7 +750,6 @@ function pagePrev() {
   slidePage("prev", () => rendition.prev());
 }
 
-
 /* =================
    START READER
 ================= */
@@ -750,7 +770,31 @@ function startReader() {
     );
 
   /* FONT & THEME */
-  
+
+  /* Inject @font-face into every epub iframe with !important to override epub CSS */
+  rendition.hooks.content.register(contents => {
+    const base = window.location.href.replace(/\/[^/]*$/, "");
+    const doc = contents.document;
+    const style = doc.createElement("style");
+    style.id = "custom-fonts";
+    style.textContent = `
+      @font-face {
+        font-family: 'Merriweather';
+        src: url('${base}/fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        src: url('${base}/fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+      }
+      body, p, li, td, th, h1, h2, h3, h4, h5, h6, span, div {
+        font-family: ${fontFamily} !important;
+      }
+    `;
+    doc.head.appendChild(style);
+  });
+
   rendition.themes.fontSize(
     fontSize + "%"
   );
@@ -801,6 +845,24 @@ function startReader() {
 
     if (!doc || !doc.body) return;
 
+    /* Detect if this page is a notes/endnotes page */
+    const pageTitle = (doc.title || "").toLowerCase();
+    const firstH = (doc.querySelector("h1,h2,h3")?.textContent || "").toLowerCase();
+    const isNotesPage =
+      pageTitle.includes("note") ||
+      pageTitle.includes("endnote") ||
+      firstH.includes("note") ||
+      firstH.includes("endnote");
+
+    /* Detect if this page is a Table of Contents page —
+       links here should always navigate normally */
+    const isTocPage =
+      pageTitle.includes("content") ||
+      pageTitle.includes("toc") ||
+      firstH.includes("content") ||
+      firstH.includes("table of contents") ||
+      doc.querySelector('nav[epub\\:type="toc"]') !== null;
+
     /* Disable text selection in iframe —
        browser menu won't appear at all */
     const noSelStyle =
@@ -828,10 +890,30 @@ function startReader() {
     doc.addEventListener("touchend", e => {
       const t = e.changedTouches[0];
 
+      /* If footnote popup is open, close it and swallow tap */
+      const existingPopup = document.getElementById("fnPopup");
+      if (existingPopup) {
+        existingPopup.remove();
+        _tx = null;
+        return;
+      }
+
       /* If sidebar is open, any tap on the
-         reader area (inside iframe) closes it */
+         reader area (inside iframe) closes it —
+         but ignore taps over the footer/header */
       if (sidebarIsOpen()) {
-        // closeSidebar();
+        const footerEl = document.querySelector(".bottomFooter");
+        const headerEl = document.querySelector("header");
+        let overControl = false;
+        if (footerEl) {
+          const fr = footerEl.getBoundingClientRect();
+          if (t.clientY >= fr.top && t.clientY <= fr.bottom) overControl = true;
+        }
+        if (headerEl) {
+          const hr = headerEl.getBoundingClientRect();
+          if (t.clientY >= hr.top && t.clientY <= hr.bottom) overControl = true;
+        }
+        if (overControl) { _tx = null; return; }
         toggleSidebar();
         _tx = null;
         return;
@@ -842,7 +924,28 @@ function startReader() {
       const dy = t.clientY - _ty;
       const dt = Date.now() - _tt;
       _tx = null;
-      /* Ignore swipes or long press */
+
+      /* Ignore taps that land over the footer/header —
+         let the actual button handle it instead */
+      const footerEl = document.querySelector(".bottomFooter");
+      const headerEl = document.querySelector("header");
+      if (footerEl) {
+        const fr = footerEl.getBoundingClientRect();
+        if (t.clientY >= fr.top && t.clientY <= fr.bottom) return;
+      }
+      if (headerEl) {
+        const hr = headerEl.getBoundingClientRect();
+        if (t.clientY >= hr.top && t.clientY <= hr.bottom) return;
+      }
+
+      /* Swipe navigation — horizontal swipe > 40px */
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) { pageNext(); hideControls(); }
+        else { pagePrev(); hideControls(); }
+        return;
+      }
+
+      /* Ignore long press or diagonal swipe */
       if (Math.abs(dx) > 25 || Math.abs(dy) > 25 || dt > 500) return;
       /* Bail if tap was on a link — let click handle it */
       const el = doc.elementFromPoint(t.clientX, t.clientY);
@@ -860,56 +963,95 @@ function startReader() {
       else { toggleControls(); }
     }, { passive: true });
 
-    doc.querySelectorAll("a[href]")
-      .forEach(anchor => {
+    /* Use document-level capture listener so it fires BEFORE
+       epub.js's own link handler, preventing page navigation */
+    doc.addEventListener("click", e => {
 
-        anchor.addEventListener("click", e => {
+      const anchor = e.target.closest("a[href]");
+      if (!anchor) return;
 
-          e.preventDefault();
-          e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
 
-          const href =
-            anchor.getAttribute("href") || "";
+      const href = anchor.getAttribute("href") || "";
 
-          const epubType =
-            anchor.getAttribute("epub:type") || "";
+      /* On a Table of Contents page, all links should
+         navigate normally — never show a footnote popup */
+      if (isTocPage) {
+        rendition.display(href).catch(err => console.error(err));
+        return;
+      }
 
-          const role =
-            anchor.getAttribute("role") || "";
+      const epubType = anchor.getAttribute("epub:type") || "";
+      const role = anchor.getAttribute("role") || "";
 
-          /* Footnote ref */
-          const isNote =
-            epubType.includes("noteref") ||
-            role.includes("doc-noteref") ||
-            anchor.classList.contains("footnote") ||
-            anchor.classList.contains("endnote");
+      /* Footnote ref — explicit epub:type or role */
+      const isNote =
+        epubType.includes("noteref") ||
+        role.includes("doc-noteref") ||
+        anchor.classList.contains("footnote") ||
+        anchor.classList.contains("endnote");
 
-          if (isNote && href.startsWith("#")) {
-            const el = doc.getElementById(href.slice(1));
-            if (el) { showFootnote(el); return; }
-          }
+      if (isNote && href.startsWith("#")) {
+        const el = doc.getElementById(href.slice(1));
+        if (el) { showFootnote(el); return; }
+      }
 
-          /* Fragment (#id) — treat as footnote */
-          if (href.startsWith("#")) {
-            const el = doc.getElementById(href.slice(1));
-            if (el) showFootnote(el);
-            return;
-          }
+      /* Same-file fragment — notes page back-link or footnote popup */
+      if (href.startsWith("#")) {
+        /* On notes page — back-links should navigate, not show popup */
+        if (isNotesPage) {
+          rendition.display(section.href + href).catch(() => {
+            rendition.history?.back?.();
+          });
+          return;
+        }
+        const el = doc.getElementById(href.slice(1));
+        if (el) { showFootnote(el); return; }
+        return;
+      }
 
-          /* External */
-          if (/^https?:\/\//.test(href)) {
-            if (confirm("Open link?\n" + href))
-              window.open(href, "_blank", "noopener");
-            return;
-          }
+      /* Cross-file fragment — ONLY treat as footnote if it's an
+         explicit note reference. Otherwise it's normal navigation
+         (e.g. TOC link to "chapter2.xhtml#section-b") */
+      if (href.includes("#")) {
+        if (isNotesPage || !isNote) {
+          rendition.display(href).catch(err => console.error(err));
+          return;
+        }
+        const parts = href.split("#");
+        const fileHref = parts[0];
+        const fragId = parts[1];
+        const spineItem = book.spine.get(fileHref);
+        if (spineItem) {
+          spineItem.load(book.load.bind(book)).then(() => {
+            const targetDoc = spineItem.document;
+            if (targetDoc) {
+              const el = targetDoc.getElementById(fragId);
+              if (el) { showFootnote(el); return; }
+            }
+            rendition.display(href).catch(err => console.error(err));
+          }).catch(() => {
+            rendition.display(href).catch(err => console.error(err));
+          });
+          return;
+        }
+      }
 
-          /* Internal chapter nav */
-          rendition.display(href)
-            .catch(err => console.error(err));
+      /* External link */
+      if (/^https?:\/\//.test(href)) {
+        if (confirm("Open link?\n" + href))
+          window.open(href, "_blank", "noopener");
+        return;
+      }
 
-        });
+      /* Internal chapter navigation */
+      rendition.display(href).catch(err => console.error(err));
 
-      });
+    }, true); /* capture: true — fires before epub.js */
+
+    /* Keep old per-anchor handlers removed — using doc-level above */
 
   });
 
@@ -919,9 +1061,18 @@ function startReader() {
     document.getElementById("fnPopup")?.remove();
 
     const clone = el.cloneNode(true);
-    clone.querySelectorAll(
-      'a.backlink'
-    ).forEach(a => a.remove());
+
+    /* Remove ALL links from popup */
+    clone.querySelectorAll("a").forEach(a => {
+      const span = document.createElement("span");
+      span.textContent = a.textContent;
+      a.replaceWith(span);
+    });
+
+    /* Don't show popup if content is just a number or back-link marker
+       e.g. "6" or "[←6]" — these are back-links, not real footnotes */
+    const text = clone.textContent.trim();
+    if (/^\[?←?\d+\]?$/.test(text) || /^\d+$/.test(text)) return;
 
     const isDark =
       document.body.classList.contains("dark") ||
@@ -949,7 +1100,7 @@ function startReader() {
       '<div style="display:flex;align-items:center;justify-content:space-between;' +
       'padding:8px 12px;border-bottom:1px solid #555;font-size:11px;' +
       'text-transform:uppercase;letter-spacing:.08em;color:#aaa;">' +
-      '<span>Footnote</span>' +
+      '<span>Note</span>' +
       '<button id="fnClose" style="background:none;border:none;cursor:pointer;' +
       'color:inherit;font-size:18px;padding:2px 6px;">✕</button></div>' +
       '<div style="padding:12px 14px;max-height:200px;overflow-y:auto;line-height:1.6;">' +
@@ -1265,11 +1416,11 @@ function applyTheme(theme) {
 
   rendition.themes.default({
     body: {
-      background:   t.bg,
-      color:        t.color,
-      padding:      "20px",
-      "line-height":"1.7",
-      "font-family":"Arial, sans-serif",
+      background:    t.bg,
+      color:         t.color,
+      padding:       "20px",
+      "line-height": "1.7",
+      "font-family": fontFamily,
     },
     a: { color: t.link },
   });
@@ -1546,7 +1697,7 @@ function updateMenuButtons() {
       ? "✕"
       : "☰";
 
-  menuBtn.textContent =
+  bottomMenuBtn.textContent =
     icon;
 
   bottomMenuBtn.textContent =
@@ -1609,11 +1760,6 @@ function closeSidebar() {
 
 /* MENU EVENTS */
 
-menuBtn.addEventListener(
-  "click",
-  toggleSidebar
-);
-
 bottomMenuBtn.addEventListener(
   "click",
   toggleSidebar
@@ -1632,6 +1778,7 @@ const themePicker =
 
 function toggleThemePicker() {
   themePicker.classList.toggle("open");
+  closeFontPicker();
 }
 
 function closeThemePicker() {
@@ -1646,13 +1793,102 @@ themeBtn.addEventListener(
   }
 );
 
-/* Close picker when nav zones are tapped */
+/* Close pickers when nav zones are tapped */
 [leftZone, centerZone, rightZone].forEach(
   zone => zone.addEventListener(
     "click",
-    () => closeThemePicker()
+    () => {
+      closeThemePicker();
+      closeFontPicker();
+    }
   )
 );
+
+/* =========================
+   FONT PICKER
+========================= */
+
+const fontPicker =
+  document.getElementById("fontPicker");
+
+const fontPickerBtn =
+  document.getElementById("fontPickerBtn");
+
+function applyFont(font) {
+  fontFamily = font;
+  localStorage.setItem("fontFamily", font);
+
+  /* Mark active button */
+  document.querySelectorAll(".fontOption")
+    .forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.font === font
+      );
+    });
+
+  if (!rendition) return;
+
+  /* Update all currently loaded iframes directly with !important */
+  rendition.getContents().forEach(contents => {
+    const doc = contents.document;
+    if (!doc) return;
+
+    /* Update or create the custom-fonts style tag */
+    let style = doc.getElementById("custom-fonts");
+    if (style) {
+      /* Update font-family rule inside the existing style */
+      const lines = style.textContent.split("\n");
+      style.textContent = style.textContent.replace(
+        /body,[\s\S]*?font-family:.*?!important;[\s\S]*?}/,
+        `body, p, li, td, th, h1, h2, h3, h4, h5, h6, span, div {
+          font-family: ${font} !important;
+        }`
+      );
+    }
+
+    /* Also set inline on body for instant effect */
+    if (doc.body) {
+      doc.body.style.setProperty("font-family", font, "important");
+    }
+  });
+
+  /* Re-apply theme so new pages also get the font */
+  applyTheme();
+}
+
+function toggleFontPicker() {
+  fontPicker.classList.toggle("open");
+  closeThemePicker();
+}
+
+function closeFontPicker() {
+  if (fontPicker) fontPicker.classList.remove("open");
+}
+
+if (fontPickerBtn) {
+  fontPickerBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    toggleFontPicker();
+  });
+}
+
+document.querySelectorAll(".fontOption")
+  .forEach(btn => {
+    btn.addEventListener("click", () => {
+      applyFont(btn.dataset.font);
+      closeFontPicker();
+    });
+  });
+
+/* Mark saved font as active on load */
+document.querySelectorAll(".fontOption")
+  .forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.font === fontFamily
+    );
+  });
 
 nextPage.addEventListener(
   "click",
@@ -1795,7 +2031,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw-regular.js"
+            "./sw-mat.js"
           );
 
       }
@@ -1842,8 +2078,8 @@ document.addEventListener("click", e => {
   if (
     sidebar.classList.contains("active") &&
     !sidebar.contains(e.target) &&
-    e.target !== menuBtn &&
-    e.target !== bottomMenuBtn
+    e.target !== bottomMenuBtn &&
+    !e.target.closest("header")
   ) {
     toggleSidebar();
   }
@@ -1906,8 +2142,10 @@ document.addEventListener("touchend", e => {
   if (
     el &&
     !sidebar.contains(el) &&
-    !menuBtn.contains(el) &&
-    !bottomMenuBtn.contains(el)
+    !bottomMenuBtn.contains(el) &&
+    !el.closest("#clearCacheBtn") &&
+    !el.closest("#faqBtn") &&
+    !el.closest("header")
   ) {
     toggleSidebar();
   }

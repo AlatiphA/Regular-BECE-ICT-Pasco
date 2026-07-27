@@ -10,7 +10,7 @@
   />
 
   <title>
-    Regular BECE ICT Pasco
+    GES Model Aptitude Test 1
   </title>
 
   <link
@@ -18,6 +18,7 @@
     href="./style.css"
   />
 
+  <!-- Google Fonts -->
   <!-- Font Awesome -->
   <link
     rel="stylesheet"
@@ -26,7 +27,7 @@
 
   <!-- Android -->
   <link rel="manifest"
-    href="./manifest-regular.json"
+    href="./manifest-mat.json"
   />
   
   <meta 
@@ -36,7 +37,7 @@
 
   <!-- iPhone -->
   <link rel="apple-touch-icon"
-    href="icon-regular-192.png"
+    href="icon-192.png"
   >
 
   <meta
@@ -58,24 +59,25 @@
   <header>
 
     <button
-      id="menuBtn"
+      id="clearCacheBtn"
       class="iconBtn"
-      aria-label="Open Menu"
+      aria-label="Clear App Data"
     >
-      <i class="fa-solid fa-bars"></i>
+      <i class="fa-solid fa-trash-can"></i>
     </button>
 
     <h1 class="title">
-      Regular BECE ICT Pasco
+      GES Model Aptitude Test 1
     </h1>
 
-    <button
-      id="themeBtn"
+    <a
+      href="./faq.html"
+      id="faqBtn"
       class="iconBtn"
-      aria-label="Change Theme"
+      aria-label="Help and FAQ"
     >
-      <i class="fa-solid fa-palette"></i>
-    </button>
+      <i class="fa-solid fa-circle-question"></i>
+    </a>
 
   </header>
 
@@ -139,20 +141,20 @@
     <div class="aboutSection">
 
     <img
-      src="icon-regular-192.png"
-      alt="BECEICT Pasco Icon"
+      src="icon-192.png"
+      alt="GES Pasco Icon"
       class="aboutIcon"
     >
 
     <div class="aboutText">
 
       <strong>
-        Regular BECE ICT Pasco
+        GES Model Aptitude Test 1
       </strong>
 
       <br>
 
-      ©️ All Rights Reserved | 2026 Edition · <span id="appVersion">v3.0.6</span>
+      ©️ All Rights Reserved | Cache Version · <span id="appVersion"> v3.1.4</span>
 
       <br>
 
@@ -161,7 +163,7 @@
     </div>
 
   </div>
-  
+
   </aside>
 
   <main>
@@ -225,6 +227,13 @@
     </button>
 
     <button
+      id="bookmarkBtn"
+      class="bottomBtn"
+    >
+      <i class="fa-solid fa-bookmark"></i>
+    </button>
+
+    <button
       id="bottomDecreaseFont"
       class="bottomBtn"
       aria-label="Smaller Font"
@@ -233,10 +242,11 @@
     </button>
 
     <button
-      id="bookmarkBtn"
+      id="fontPickerBtn"
       class="bottomBtn"
+      aria-label="Change Font"
     >
-      <i class="fa-solid fa-bookmark"></i>
+      <i class="fa-solid fa-font"></i>
     </button>
 
     <button
@@ -248,13 +258,20 @@
     </button>
 
     <button
+      id="themeBtn"
+      class="bottomBtn"
+      aria-label="Change Theme"
+    >
+      <i class="fa-solid fa-palette"></i>
+    </button>
+
+    <button
       id="searchBtn"
       class="bottomBtn"
       aria-label="Search"
     >
       <i class="fa-solid fa-magnifying-glass"></i>
     </button>
-
 
   </div>
 
@@ -303,6 +320,18 @@
         <span class="themeSwatchWrap night"><span class="themeSwatch"></span></span>
         <span>Night</span>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- FONT PICKER -->
+<div id="fontPicker" class="fontPicker">
+  <div class="fontPickerInner">
+    <span class="fontPickerLabel">Font</span>
+    <div class="fontOptions">
+      <button class="fontOption" data-font="serif">Serif</button>
+      <button class="fontOption" data-font="'Open Sans', sans-serif">Open Sans</button>
+      <button class="fontOption" data-font="Arial, sans-serif">Arial</button>
     </div>
   </div>
 </div>

@@ -1,3 +1,21 @@
+/* =========================
+   CUSTOM FONTS
+========================= */
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url('./fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('./fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -368,6 +386,33 @@ body.night .sidebar { background: #0a0a0a; color: #bbbbbb; }
   font-size: 11px;
 }
 
+.sidebarFooter {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border, #ddd);
+  font-size: 11px;
+}
+
+.sidebarFooterLink {
+  color: #956433;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebarFooterDot {
+  opacity: 0.3;
+}
+
+.sidebarFooterCopy {
+  opacity: 0.45;
+}
+
 
 /* =========================
    TOC
@@ -479,49 +524,50 @@ button {
 
 #searchInput {
   flex: 1;
-
   height: 42px;
-
   border: none;
-
   border-radius: 10px;
-
   padding: 0 14px;
-
   font-size: 15px;
+  background: #fff;
+  color: #111;
 }
+
+body.dark  #searchInput { background: #2a2a2a; color: #eee; }
+body.sepia #searchInput { background: #ede3d0; color: #2c1a0e; }
+body.night #searchInput { background: #1a1a1a; color: #bbb; }
 
 #closeSearch {
   width: 42px;
-
   border: none;
-
   border-radius: 10px;
-
   font-size: 16px;
-
   cursor: pointer;
+  background: #eee;
+  color: #111;
 }
+
+body.dark  #closeSearch { background: #333; color: #eee; }
+body.sepia #closeSearch { background: #c8b89a; color: #2c1a0e; }
+body.night #closeSearch { background: #222; color: #bbb; }
 
 #searchResults {
   flex: 1;
-
   overflow-y: auto;
-
-  background: white;
-
+  background: #ffffff;
   border-radius: 12px;
-
   padding: 10px;
+  color: #111;
 }
+
+body.dark  #searchResults { background: #1e1e1e; color: #eee; }
+body.sepia #searchResults { background: #ede3d0; color: #2c1a0e; }
+body.night #searchResults { background: #0a0a0a; color: #bbb; }
 
 .searchItem {
   padding: 12px;
-
   border-bottom: 1px solid #ddd;
-
   cursor: pointer;
-
   font-size: 14px;
 }
 
@@ -529,15 +575,9 @@ button {
   background: rgba(0,0,0,0.05);
 }
 
-body.dark #searchResults {
-  background: #1e1e1e;
-
-  color: white;
-}
-
-body.dark .searchItem {
-  border-color: #333;
-}
+body.dark  .searchItem { border-color: #333; }
+body.sepia .searchItem { border-color: #c8b89a; }
+body.night .searchItem { border-color: #222; }
 
 .search-highlight {
   pointer-events: none;
@@ -858,6 +898,73 @@ body.dark .bookmarkRow {
 .themeSwatchWrap.dark  .themeSwatch { background: #111111; }
 .themeSwatchWrap.sepia .themeSwatch { background: #f4ede0; border: 1px solid #c8b89a; }
 .themeSwatchWrap.night .themeSwatch { background: #000000; border: 1px solid #333; }
+
+/* =========================
+   FONT PICKER
+========================= */
+
+.fontPicker {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  z-index: 19999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fontPicker.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+
+.fontPickerInner {
+  background: rgba(30,30,30,0.97);
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.fontPickerLabel {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.fontOptions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.fontOption {
+  background: none;
+  border: 1px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 11px;
+  padding: 5px 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.fontOption:hover {
+  background: rgba(255,255,255,0.07);
+}
+
+.fontOption.active {
+  color: #956433;
+  border-color: #956433;
+}
 
 /* =========================
    MOMO SUPPORT SECTION
