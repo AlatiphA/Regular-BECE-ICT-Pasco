@@ -170,10 +170,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "ges-mat-data";
+  "rbece-pasco-data";
 
 const BOOKMARKS_KEY =
-  "ges-mat-bookmarks";
+  "rbece-pasco-bookmarks";
 
 
 /* =========================
