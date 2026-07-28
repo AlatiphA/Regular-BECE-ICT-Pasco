@@ -161,7 +161,7 @@
     banner.innerHTML = `
       <img src="icon-192.png" alt="Icon" />
       <div class="ib-text">
-        <div class="ib-title">BECE ICT Pasco</div>
+        <div class="ib-title">Regular BECE ICT Pasco</div>
         <div class="ib-sub">Add to Home Screen for offline reading</div>
       </div>
       <div class="ib-actions">
@@ -225,7 +225,7 @@
       banner.id = "iosBanner";
       banner.innerHTML = `
         <div class="ios-title">
-          📖 Install BECE ICT Pasco
+          📖 Install Regular BECE ICT Pasco
         </div>
         <div class="ios-steps">
           Tap <strong>Share</strong> (□↑) at the bottom of Safari<br>
