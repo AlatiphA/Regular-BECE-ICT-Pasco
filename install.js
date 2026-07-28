@@ -159,7 +159,7 @@
       document.createElement("div");
     banner.id = "installBanner";
     banner.innerHTML = `
-      <img src="icon-192.png" alt="Regular Icon" />
+      <img src="icon-192.png" alt="Icon" />
       <div class="ib-text">
         <div class="ib-title">BECE ICT Pasco</div>
         <div class="ib-sub">Add to Home Screen for offline reading</div>
