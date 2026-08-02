@@ -1,5 +1,5 @@
 /* =====================================================
-   GES Pasco — Service Worker
+   Service Worker
    ─────────────────────────────────────────────────
    HOW TO UPDATE:
    Bump APP_VERSION on every release (e.g. "1.0.1").
@@ -8,7 +8,7 @@
 ===================================================== */
 
 const APP_VERSION  = "v3.4.3";
-const CACHE_NAME   = `alatipha-ges-pasco-${APP_VERSION}`;
+const CACHE_NAME   = `model-aptitude-test2-${APP_VERSION}`;
 
 /* ====================
    APP SHELL
@@ -20,8 +20,8 @@ const FILES_TO_CACHE = [
   "./faq.html",
   "./style.css",
   "./app.js",
-  "./sw.js",
-  "./manifest.json",
+  "./sw-regular.js",
+  "./manifest-regular.json",
   "./library/sample.epub",
   "./icon-192.png",
   "./icon-512.png",
