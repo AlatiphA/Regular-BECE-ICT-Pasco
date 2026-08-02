@@ -2159,7 +2159,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw.js"
+            "./sw-regular.js"
           );
 
       }
