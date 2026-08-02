@@ -170,7 +170,11 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "ges-pasco-data";
+  "private-beceict-data";
+
+const BOOKMARKS_KEY =
+  "private-beceict-bookmarks";
+
 
 /* =========================
    SUPPORTER KEY SYSTEM
@@ -254,9 +258,6 @@ if (supporterKeySubmit) {
 
 /* Apply supporter UI on load */
 applySupporterUI();
-
-const BOOKMARKS_KEY =
-  "ges-pasco-bookmarks";
 
 
 /* =========================
