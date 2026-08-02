@@ -10,7 +10,7 @@
   />
 
   <title>
-    Regular BECE ICT Pasco 
+    GES Promotion Aptitude Test Pasco
   </title>
 
   <link
@@ -22,12 +22,12 @@
   <!-- Font Awesome -->
   <link
     rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
   />
 
   <!-- Android -->
   <link rel="manifest"
-    href="./manifest-regular.json"
+    href="./manifest.json"
   />
   
   <meta 
@@ -67,7 +67,7 @@
     </button>
 
     <h1 class="title">
-      Regular BECE ICT Pasco
+      GES Promotion Aptitude Test Pasco
     </h1>
 
     <a
@@ -103,7 +103,7 @@
     </div>
 
     <!-- MoMo Support Section -->
-    <div class="momoSection">
+    <div class="momoSection" id="momoSection">
 
       <div class="momoTitle">
         <i class="fa-solid fa-heart"></i> Support AlatiphA
@@ -135,6 +135,16 @@
 
       </div>
 
+      <button class="supporterKeyLink" id="supporterKeyLink">
+        Already supported? Enter your key
+      </button>
+
+    </div>
+
+    <!-- SUPPORTER THANK YOU (shown after valid key) -->
+    <div class="supporterThanks" id="supporterThanks" style="display:none">
+      <i class="fa-solid fa-circle-check"></i>
+      <span>Thank you for supporting AlatiphA!</span>
     </div>
 
     <!-- About --> 
@@ -142,19 +152,19 @@
 
     <img
       src="icon-192.png"
-      alt="Regular Pasco Icon"
+      alt="GES Pasco Icon"
       class="aboutIcon"
     >
 
     <div class="aboutText">
 
       <strong>
-        Regular BECE ICT Pasco
+        GES Promotion Aptitude Test Pasco
       </strong>
 
       <br>
 
-      ©️ All Rights Reserved | Cache Version · <span id="appVersion"> v3.1.4</span>
+      ©️ All Rights Reserved | Cache Version · <span id="appVersion"> v0.0.0</span>
 
       <br>
 
@@ -337,6 +347,25 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<!-- SUPPORTER KEY MODAL -->
+<div id="supporterKeyModal" class="supporterKeyModal">
+  <div class="supporterKeyBox">
+    <div class="supporterKeyHeader">
+      <span>Enter Supporter Key</span>
+      <button id="supporterKeyClose" aria-label="Close">✕</button>
+    </div>
+    <input
+      type="text"
+      id="supporterKeyInput"
+      placeholder="e.g. ALATIPHA-XXXX-XXXX"
+      autocomplete="off"
+      autocapitalize="characters"
+    />
+    <button id="supporterKeySubmit">Activate</button>
+    <p id="supporterKeyError" class="supporterKeyError"></p>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
