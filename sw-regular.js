@@ -7,8 +7,8 @@
    get a "New version available" prompt on next visit.
 ===================================================== */
 
-const APP_VERSION  = "v3.4.3";
-const CACHE_NAME   = `model-aptitude-test2-${APP_VERSION}`;
+const APP_VERSION  = "v3.4.4";
+const CACHE_NAME   = `regular-beceict-pasco-${APP_VERSION}`;
 
 /* ====================
    APP SHELL
